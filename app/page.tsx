@@ -8,21 +8,30 @@ export default function Home() {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const initialData = {
-    name: "ইউসরা মোহাম্মদ,",
-    age: "৩৩",
-    pensionStartAge: "৫৫",
-    monthlyPension: "১,০০,০০০",
-    annualPremium: "৩,৫৮,৮০০",
-    depositPeriod: "২২",
-    totalDeposit: "৭৮,৯৩,৬০০",
+    name: "[নাম লিখুন]",
+    age: "[বয়স]",
+    pensionStartAge: "[বছর]",
+    monthlyPension: "[টাকা]",
+    annualPremium: "[টাকা]",
+    depositPeriod: "[বছর]",
+    totalDeposit: "[টাকা]",
   };
 
   const handleDownloadPDF = async () => {
     setIsGenerating(true);
     try {
+      // Get the name from the editable document
+      const documentContent = document.getElementById("editable-document-content");
+      const nameElement = documentContent?.querySelector('.editable-field') as HTMLElement;
+      const name = nameElement?.textContent?.trim() || "pension-policy-proposal";
+      
+      // Remove comma and clean the name for filename
+      const cleanName = name.replace(/,/g, '').trim();
+      const filename = cleanName ? `${cleanName}.pdf` : "pension-policy-proposal.pdf";
+      
       await generatePDF(
         "editable-document-content",
-        "pension-policy-proposal.pdf"
+        filename
       );
     } catch (error) {
       console.error("Error generating PDF:", error);

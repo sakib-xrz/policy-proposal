@@ -57,7 +57,7 @@ export default function EditableDocument({
         fontFamily: "Noto Sans Bengali, sans-serif",
         padding: "60px 80px",
         lineHeight: "1.8",
-        fontSize: "16px",
+        fontSize: "20px",
         color: "#000000",
         backgroundColor: "#ffffff",
       }}
@@ -70,7 +70,7 @@ export default function EditableDocument({
           suppressContentEditableWarning
           style={{
             fontWeight: "700",
-            fontSize: "24px",
+            fontSize: "32px",
             outline: "none",
             display: "inline",
             backgroundColor: "transparent",
@@ -134,11 +134,7 @@ export default function EditableDocument({
           className="editable-field"
         />
         <span> টাকা</span>
-      </div>
-
-      {/* Premium Line */}
-      <div style={{ marginBottom: "8px" }}>
-        <span>পেনশনের জন্য বার্ষিক প্রিমিয়াম </span>
+        <span> পেনশনের জন্য বার্ষিক প্রিমিয়াম </span>
         <span
           ref={annualPremiumRef}
           contentEditable
@@ -153,7 +149,7 @@ export default function EditableDocument({
           }}
           className="editable-field"
         />
-        <span>/=টাকা।</span>
+        <span>/= টাকা।</span>
       </div>
 
       {/* Deposit Line */}
@@ -187,13 +183,13 @@ export default function EditableDocument({
           }}
           className="editable-field"
         />
-        <span>/=টাকা।</span>
+        <span>/= টাকা।</span>
       </div>
 
       {/* Features Section - Static */}
-      <div style={{ marginTop: "32px", marginBottom: "16px" }}>
+      <div style={{ marginTop: "16px", marginBottom: "8px" }}>
         <h2
-          style={{ fontWeight: "700", fontSize: "18px", marginBottom: "16px" }}
+          style={{ fontWeight: "700", fontSize: "28px", marginBottom: "8px" }}
         >
           বৈশিষ্ট্যাবলী:
         </h2>
@@ -209,32 +205,32 @@ export default function EditableDocument({
           }}
         >
           <li style={{ marginBottom: "12px", paddingLeft: "4px" }}>
-            ➼ মেয়াদপূর্তিতে বয়সের জীবনের জন্য আজীবন পেনশনের ব্যবস্থা অথবা
+            ⮞ মেয়াদপূর্তিতে বয়সের জীবনের জন্য আজীবন পেনশনের ব্যবস্থা অথবা
             মেয়াদপূর্তিতে পেনশনের টাকার ৫০% অথবা ১০০% সমর্পণ (কম্যুটেশন) মূল্য
             পাওয়ার সুবিধা।
           </li>
-          <li style={{ marginBottom: "24px", paddingLeft: "4px" }}>
-            ➼ পেনশন প্রদান শুরুর ১০ (দশ) বছরের মধ্যে মৃত্যু হলে দশ বছরের অবশিষ্ট
+          <li style={{ marginBottom: "12px", paddingLeft: "4px" }}>
+            ⮞ পেনশন প্রদান শুরুর ১০ (দশ) বছরের মধ্যে মৃত্যু হলে দশ বছরের অবশিষ্ট
             সময়ের জন্য পেনশনভোগীর মনোনীতকের (নমিনি) পেনশন লাভের গ্যারান্টি।
           </li>
           <li style={{ marginBottom: "12px", paddingLeft: "4px" }}>
-            ➼ বীমাগ্রাহক বীমার মেয়াদের মধ্যে মৃত্যুবরণ করলে মনোনীত ব্যক্তিকে
+            ⮞ বীমাগ্রাহক বীমার মেয়াদের মধ্যে মৃত্যুবরণ করলে মনোনীত ব্যক্তিকে
             মৃত্যুর সাথে সাথেই বার্ষিক পেনশনের ৫ গুণ পরিমাণ অর্থ এবং মৃত্যুর
             পরবর্তী ১০ বছর পর্যন্ত বার্ষিক পেনশন প্রদান করা হবে।
           </li>
           <li style={{ marginBottom: "12px", paddingLeft: "4px" }}>
-            ➼ বীমার মেয়াদে শর্তানুযায়ী বীমাগ্রাহক পরিশোধিত মূল্য, সমর্পণ ও ঋণ
+            ⮞ বীমার মেয়াদে শর্তানুযায়ী বীমাগ্রাহক পরিশোধিত মূল্য, সমর্পণ ও ঋণ
             গ্রহণ করার সুবিধা প্রাপ্য হবেন।
           </li>
           <li style={{ marginBottom: "12px", paddingLeft: "4px" }}>
-            ➼ প্রদত্ত প্রিমিয়ামের উপর আয়কর রেয়াত পাওয়া যাবে।
+            ⮞ প্রদত্ত প্রিমিয়ামের উপর আয়কর রেয়াত পাওয়া যাবে।
           </li>
           <li style={{ marginBottom: "12px", paddingLeft: "4px" }}>
-            ➼ এই বীমার সঙ্গে অতিরিক্ত সুবিধাবর বীমা Supplementary benefit গ্রহণ
+            ⮞ এই বীমার সঙ্গে অতিরিক্ত সুবিধাবর বীমা Supplementary benefit গ্রহণ
             করা যাবে।
           </li>
           <li style={{ marginBottom: "0", paddingLeft: "4px" }}>
-            ➼ মরণোত্তর দাবীর টাকা আয়করমুক্ত।
+            ⮞ মরণোত্তর দাবীর টাকা আয়করমুক্ত।
           </li>
         </ul>
       </div>

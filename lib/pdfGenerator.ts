@@ -20,8 +20,6 @@ export async function generatePDF(
       throw new Error(`Element with ID "${elementId}" not found`);
     }
 
-    console.log("Starting PDF generation...");
-
     // A4 dimensions at 96 DPI (standard screen DPI)
     // A4 = 210mm x 297mm = 8.27" x 11.69" = 794px x 1123px at 96 DPI
     const A4_WIDTH_PX = 794;
@@ -77,7 +75,6 @@ export async function generatePDF(
           }
           #content-wrapper {
             width: ${A4_WIDTH_PX}px;
-            padding: 40px 20px;
             background: #ffffff;
           }
           #content-inner {
@@ -86,7 +83,7 @@ export async function generatePDF(
             padding: 60px 80px;
             font-family: 'Noto Sans Bengali', sans-serif;
             line-height: 1.8;
-            font-size: 16px;
+            font-size: 20px;
             color: #000000;
           }
         </style>
@@ -156,8 +153,6 @@ export async function generatePDF(
         foreignObjectRendering: false,
       });
 
-      console.log("Canvas captured, creating PDF...");
-
       // Get canvas dimensions
       const imgWidth = canvas.width;
       const imgHeight = canvas.height;
@@ -209,12 +204,8 @@ export async function generatePDF(
         "FAST"
       );
 
-      console.log("PDF created, downloading...");
-
       // Download the PDF
       pdf.save(filename);
-
-      console.log("PDF download started successfully");
     } finally {
       // Clean up: remove iframe
       if (iframe && iframe.parentNode) {
