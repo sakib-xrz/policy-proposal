@@ -21,18 +21,22 @@ export default function Home() {
     setIsGenerating(true);
     try {
       // Get the name from the editable document
-      const documentContent = document.getElementById("editable-document-content");
-      const nameElement = documentContent?.querySelector('.editable-field') as HTMLElement;
-      const name = nameElement?.textContent?.trim() || "pension-policy-proposal";
-      
-      // Remove comma and clean the name for filename
-      const cleanName = name.replace(/,/g, '').trim();
-      const filename = cleanName ? `${cleanName}.pdf` : "pension-policy-proposal.pdf";
-      
-      await generatePDF(
-        "editable-document-content",
-        filename
+      const documentContent = document.getElementById(
+        "editable-document-content"
       );
+      const nameElement = documentContent?.querySelector(
+        ".editable-field"
+      ) as HTMLElement;
+      const name =
+        nameElement?.textContent?.trim() || "pension-policy-proposal";
+
+      // Remove comma and clean the name for filename
+      const cleanName = name.replace(/,/g, "").trim();
+      const filename = cleanName
+        ? `${cleanName}.pdf`
+        : "pension-policy-proposal.pdf";
+
+      await generatePDF("editable-document-content", filename);
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("PDF generation failed. Please try again.");
@@ -147,15 +151,7 @@ export default function Home() {
         </div>
 
         {/* Editable Document */}
-        <div
-          id="editable-document"
-          style={{
-            backgroundColor: "white",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-            borderRadius: "4px",
-            overflow: "hidden",
-          }}
-        >
+        <div id="editable-document">
           <EditableDocument initialData={initialData} />
         </div>
       </div>
