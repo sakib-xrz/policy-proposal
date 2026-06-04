@@ -67,6 +67,8 @@ export default function EditableDocument({
           contentEditable
           suppressContentEditableWarning
           style={{
+            color: "#0000FF",
+            fontStyle: "italic",
             fontWeight: "700",
             fontSize: "32px",
             outline: "none",
@@ -187,7 +189,12 @@ export default function EditableDocument({
       {/* Features Section - Static */}
       <div style={{ marginTop: "16px", marginBottom: "8px" }}>
         <h2
-          style={{ fontWeight: "700", fontSize: "28px", marginBottom: "8px" }}
+          style={{
+            fontWeight: "700",
+            fontSize: "28px",
+            marginBottom: "8px",
+            color: "#00ab41",
+          }}
         >
           বৈশিষ্ট্যাবলী:
         </h2>
@@ -211,7 +218,13 @@ export default function EditableDocument({
             • পেনশন প্রদান শুরুর ১০ (দশ) বছরের মধ্যে মৃত্যু হলে দশ বছরের অবশিষ্ট
             সময়ের জন্য পেনশনভোগীর মনোনীতকের (নমিনি) পেনশন লাভের গ্যারান্টি।
           </li>
-          <li style={{ marginBottom: "12px", paddingLeft: "4px" }}>
+          <li
+            style={{
+              marginBottom: "12px",
+              paddingLeft: "4px",
+              color: "#FF0000",
+            }}
+          >
             • বীমাগ্রাহক বীমার মেয়াদের মধ্যে মৃত্যুবরণ করলে মনোনীত ব্যক্তিকে
             মৃত্যুর সাথে সাথেই বার্ষিক পেনশনের ৫ গুণ পরিমাণ অর্থ এবং মৃত্যুর
             পরবর্তী ১০ বছর পর্যন্ত বার্ষিক পেনশন প্রদান করা হবে।
@@ -220,7 +233,13 @@ export default function EditableDocument({
             • বীমার মেয়াদে শর্তানুযায়ী বীমাগ্রাহক পরিশোধিত মূল্য, সমর্পণ ও ঋণ
             গ্রহণ করার সুবিধা প্রাপ্য হবেন।
           </li>
-          <li style={{ marginBottom: "12px", paddingLeft: "4px" }}>
+          <li
+            style={{
+              marginBottom: "12px",
+              paddingLeft: "4px",
+              color: "#FF0000",
+            }}
+          >
             • প্রদত্ত প্রিমিয়ামের উপর আয়কর রেয়াত পাওয়া যাবে।
           </li>
           <li style={{ marginBottom: "12px", paddingLeft: "4px" }}>
