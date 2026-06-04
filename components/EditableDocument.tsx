@@ -72,7 +72,7 @@ export default function EditableDocument({
         <img
           src={headerImage.src}
           alt="জীবন বীমা কর্পোরেশন (একমাত্র রাষ্ট্রীয় জীবন বীমা প্রতিষ্ঠান)"
-          style={{ height: "120px" }}
+          style={{ height: "120px", objectFit: "contain" }}
         />
       </header>
       {/* Name - Editable */}
