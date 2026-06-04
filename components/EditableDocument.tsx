@@ -1,6 +1,9 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
+import Image from "next/image";
 import { useRef, useEffect } from "react";
+import headerImage from "@/public/header-image.png";
 
 interface EditableDocumentProps {
   initialData: {
@@ -60,6 +63,19 @@ export default function EditableDocument({
         color: "#000000",
       }}
     >
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <img
+          src={headerImage.src}
+          alt="জীবন বীমা কর্পোরেশন (একমাত্র রাষ্ট্রীয় জীবন বীমা প্রতিষ্ঠান)"
+          style={{ height: "120px" }}
+        />
+      </header>
       {/* Name - Editable */}
       <div style={{ marginBottom: "8px" }}>
         <span
