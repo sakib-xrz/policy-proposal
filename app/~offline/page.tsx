@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import { BACKGROUND_COLOR, LOGO_PATH, THEME_COLOR } from "@/lib/pwa-config";
 
 export const metadata: Metadata = {
   title: "অফলাইন",
@@ -15,37 +17,19 @@ export default function OfflinePage() {
         justifyContent: "center",
         padding: "32px 24px",
         fontFamily: "Noto Sans Bengali, sans-serif",
-        backgroundColor: "#f5f5f5",
+        backgroundColor: BACKGROUND_COLOR,
         color: "#1a1a1a",
         textAlign: "center",
       }}
     >
-      <div
-        style={{
-          width: 72,
-          height: 72,
-          borderRadius: 18,
-          background: "linear-gradient(145deg, #2563eb 0%, #1d4ed8 100%)",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: 24,
-        }}
-      >
-        <svg
-          width="36"
-          height="36"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden
-        >
-          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-        </svg>
-      </div>
+      <Image
+        src={LOGO_PATH}
+        alt=""
+        width={96}
+        height={96}
+        priority
+        style={{ marginBottom: 24, objectFit: "contain" }}
+      />
       <h1 style={{ fontSize: 24, fontWeight: 700, margin: "0 0 12px" }}>
         আপনি অফলাইনে আছেন
       </h1>
@@ -63,7 +47,7 @@ export default function OfflinePage() {
       <a
         href="/"
         style={{
-          backgroundColor: "#2563eb",
+          backgroundColor: THEME_COLOR,
           color: "white",
           fontWeight: 600,
           padding: "12px 24px",

@@ -1,33 +1,39 @@
 import type { MetadataRoute } from "next";
+import {
+  APP_DESCRIPTION,
+  APP_NAME,
+  BACKGROUND_COLOR,
+  LOGO_PATH,
+  THEME_COLOR,
+} from "@/lib/pwa-config";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "পেনশন পলিসি প্রস্তাব",
-    short_name: "পেনশন প্রস্তাব",
-    description:
-      "বাংলায় পেনশন পলিসি প্রস্তাব তৈরি, সম্পাদনা ও PDF ডাউনলোড করুন",
+    name: APP_NAME,
+    short_name: APP_NAME,
+    description: APP_DESCRIPTION,
     start_url: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#f5f5f5",
-    theme_color: "#2563eb",
-    lang: "bn",
+    background_color: BACKGROUND_COLOR,
+    theme_color: THEME_COLOR,
+    lang: "en",
     categories: ["finance", "productivity", "business"],
     icons: [
       {
-        src: "/icons/icon-192",
+        src: "/icons/icon-192.png",
         sizes: "192x192",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/icons/icon-512",
+        src: LOGO_PATH,
         sizes: "512x512",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/icons/icon-512-maskable",
+        src: LOGO_PATH,
         sizes: "512x512",
         type: "image/png",
         purpose: "maskable",

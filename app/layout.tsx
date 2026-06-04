@@ -1,6 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import { Noto_Sans_Bengali } from "next/font/google";
+import PwaSplash from "@/components/pwa-splash";
 import { SerwistProvider } from "@/components/serwist-provider";
+import {
+  APP_DESCRIPTION,
+  APP_NAME,
+  BACKGROUND_COLOR,
+  LOGO_PATH,
+  THEME_COLOR,
+} from "@/lib/pwa-config";
 import "./globals.css";
 
 const notoSansBengali = Noto_Sans_Bengali({
@@ -9,15 +17,10 @@ const notoSansBengali = Noto_Sans_Bengali({
   weight: ["400", "500", "600", "700"],
 });
 
-const APP_NAME = "পেনশন প্রস্তাব";
-const APP_TITLE = "পেনশন পলিসি প্রস্তাব";
-const APP_DESCRIPTION =
-  "বাংলায় পেনশন পলিসি প্রস্তাব তৈরি, সম্পাদনা ও PDF ডাউনলোড করুন";
-
 export const metadata: Metadata = {
   applicationName: APP_NAME,
   title: {
-    default: APP_TITLE,
+    default: APP_NAME,
     template: `%s | ${APP_NAME}`,
   },
   description: APP_DESCRIPTION,
@@ -31,23 +34,22 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: [{ url: "/icon", type: "image/png" }],
-    apple: [{ url: "/apple-icon", type: "image/png" }],
+    icon: [{ url: LOGO_PATH, type: "image/png", sizes: "512x512" }],
+    apple: [{ url: LOGO_PATH, type: "image/png", sizes: "512x512" }],
   },
   openGraph: {
     type: "website",
     siteName: APP_NAME,
-    title: APP_TITLE,
+    title: APP_NAME,
     description: APP_DESCRIPTION,
-    locale: "bn_BD",
+  },
+  other: {
+    "mobile-web-app-capable": "yes",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#2563eb" },
-    { media: "(prefers-color-scheme: dark)", color: "#1d4ed8" },
-  ],
+  themeColor: THEME_COLOR,
 };
 
 export default function RootLayout({
@@ -57,11 +59,30 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="bn">
+      <head>
+        <link
+          rel="apple-touch-startup-image"
+          href="/splash"
+          media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+        />
+        <link
+          rel="apple-touch-startup-image"
+          href="/splash"
+          media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+        />
+        <link rel="apple-touch-startup-image" href="/splash" />
+      </head>
       <body
         className={`${notoSansBengali.variable} antialiased`}
-        style={{ fontFamily: "Noto Sans Bengali, sans-serif" }}
+        style={{
+          fontFamily: "Noto Sans Bengali, sans-serif",
+          backgroundColor: BACKGROUND_COLOR,
+        }}
       >
-        <SerwistProvider swUrl="/serwist/sw.js">{children}</SerwistProvider>
+        <SerwistProvider swUrl="/serwist/sw.js">
+          <PwaSplash />
+          {children}
+        </SerwistProvider>
       </body>
     </html>
   );
