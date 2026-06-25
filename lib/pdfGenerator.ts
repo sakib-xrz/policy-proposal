@@ -1,6 +1,19 @@
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
+/** Scale factor applied to all text when exporting to PDF (web view unchanged). */
+const PDF_FONT_SCALE = 0.88;
+
+function scaleFontSize(fontSize: string): string {
+  const match = fontSize.match(/^([\d.]+)(px|pt|rem|em)$/);
+  if (!match) return fontSize;
+  const scaled = parseFloat(match[1]) * PDF_FONT_SCALE;
+  const unit = match[2];
+  return unit === "px"
+    ? `${Math.round(scaled * 10) / 10}px`
+    : `${scaled}${unit}`;
+}
+
 /**
  * Generates a multi-page PDF from a DOM element.
  * Captures the full content height and splits it into A4 pages.
@@ -20,7 +33,6 @@ export async function generatePDF(
     // A4 at 96 DPI: 794 × 1123 px
     const A4_WIDTH_PX = 794;
     const A4_HEIGHT_PX = 1123;
-    const PADDING_PX = 120; // top+bottom padding in the iframe
 
     // ------------------------------------------------------------------
     // Step 1: render in a hidden iframe to measure actual content height
@@ -69,7 +81,7 @@ export async function generatePDF(
             padding: 60px 80px;
             font-family: 'Noto Sans Bengali', sans-serif;
             line-height: 1.8;
-            font-size: 20px;
+            font-size: ${20 * PDF_FONT_SCALE}px;
             color: #000000;
           }
         </style>
@@ -89,6 +101,9 @@ export async function generatePDF(
     const processElement = (el: HTMLElement) => {
       el.removeAttribute("class");
       if (!el.style.color) el.style.color = "#000000";
+      if (el.style.fontSize) {
+        el.style.fontSize = scaleFontSize(el.style.fontSize);
+      }
       Array.from(el.children).forEach((child) => {
         if (child instanceof HTMLElement) processElement(child);
       });
@@ -102,14 +117,11 @@ export async function generatePDF(
     // Allow layout to settle
     await new Promise((resolve) => setTimeout(resolve, 600));
 
-    // Measure actual rendered height
-    const fullContentHeight = contentInner.scrollHeight + PADDING_PX;
+    // scrollHeight already includes #content-inner padding — do not add extra height
+    const fullContentHeight = contentInner.scrollHeight;
 
-    // Resize iframe to full content height so nothing is clipped
+    // Size iframe to content only (avoid minHeight stretching blank area onto a 2nd page)
     iframe.style.height = `${fullContentHeight}px`;
-    if (iframe.contentWindow) {
-      iframe.contentDocument!.body.style.minHeight = `${fullContentHeight}px`;
-    }
 
     await new Promise((resolve) => setTimeout(resolve, 200));
 
@@ -165,6 +177,16 @@ export async function generatePDF(
       return true;
     };
 
+    // Drop trailing blank rows so short documents (e.g. pension) don't get an empty page
+    let effectiveCanvasHeight = canvasHeight;
+    while (
+      effectiveCanvasHeight > 0 &&
+      isRowBlank(effectiveCanvasHeight - 1)
+    ) {
+      effectiveCanvasHeight--;
+    }
+    if (effectiveCanvasHeight === 0) effectiveCanvasHeight = canvasHeight;
+
     const pdf = new jsPDF({
       orientation: "portrait",
       unit: "mm",
@@ -175,14 +197,14 @@ export async function generatePDF(
     let currentY = 0;
     let pageIndex = 0;
 
-    while (currentY < canvasHeight) {
+    while (currentY < effectiveCanvasHeight) {
       if (pageIndex > 0) pdf.addPage();
 
       const idealEnd = currentY + contentHeightPerPage;
       let sliceEnd: number;
 
-      if (idealEnd >= canvasHeight) {
-        sliceEnd = canvasHeight;
+      if (idealEnd >= effectiveCanvasHeight) {
+        sliceEnd = effectiveCanvasHeight;
       } else {
         // Search upward from the ideal boundary for a fully-blank row.
         // Keep at least 20% of the page filled so a single large

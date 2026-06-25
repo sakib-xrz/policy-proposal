@@ -43,6 +43,18 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
   if (e.key === "Enter") e.preventDefault();
 };
 
+const deathBenefitRows = [
+  ["১ বছর", "১০%"],
+  ["২ বছর", "২০%"],
+  ["৩ বছর", "৩০%"],
+  ["৪ বছর", "৪০%"],
+  ["৫ বছর", "৫০%"],
+  ["৬ বছর", "৬০%"],
+  ["৭ বছর", "৭০%"],
+  ["৮ বছর", "৮০%"],
+  ["৯ বছর", "৯০%"],
+];
+
 export default function SisuNirapottaDocument({
   initialData,
 }: SisuNirapottaDocumentProps) {
@@ -289,135 +301,43 @@ export default function SisuNirapottaDocument({
           থাকেন, তাহলে মেয়াদ অন্তে অর্পিত বোনাসসহ বীমাকৃত অর্থ প্রদান করা হয়।
         </p>
 
-        {/* Para 6 – child dies before maturity + table */}
+        {/* Para 6 – child dies before maturity + death benefit chart */}
         <p style={{ marginBottom: "12px" }}>
           যদি মেয়াদ-পূর্তির পূর্বে শিশুর মৃত্যু হয় তাহলে নিম্নে বর্ণিত তালিকা
           অনুসারে বীমার টাকা প্রিমিয়ামদাতাকে দেওয়া হয়।
         </p>
 
-        {/* Death benefit table */}
         <div style={{ marginBottom: "20px" }}>
           <p
             style={{
               fontWeight: "700",
               fontSize: "22px",
-              marginBottom: "12px",
+              marginBottom: "8px",
             }}
           >
             মৃত্যুকালীন শিশুর বয়স :
           </p>
-          <table
-            style={{
-              borderCollapse: "collapse",
-              width: "100%",
-              fontSize: "18px",
-            }}
-          >
-            <thead>
-              <tr style={{ backgroundColor: "#f0f0f0" }}>
-                <th
-                  style={{
-                    border: "1px solid #555",
-                    padding: "8px 14px",
-                    textAlign: "center",
-                    fontWeight: "700",
-                  }}
-                >
-                  মৃত্যুকালীন বয়স
-                </th>
-                <th
-                  style={{
-                    border: "1px solid #555",
-                    padding: "8px 14px",
-                    textAlign: "center",
-                    fontWeight: "700",
-                  }}
-                >
-                  প্রদেয় অর্থ
-                </th>
-                <th
-                  style={{
-                    border: "1px solid #555",
-                    padding: "8px 14px",
-                    textAlign: "center",
-                    fontWeight: "700",
-                  }}
-                >
-                  বীমা অংকের হার
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                ["১ বছর", "১০%"],
-                ["২ বছর", "২০%"],
-                ["৩ বছর", "৩০%"],
-                ["৪ বছর", "৪০%"],
-                ["৫ বছর", "৫০%"],
-                ["৬ বছর", "৬০%"],
-                ["৭ বছর", "৭০%"],
-                ["৮ বছর", "৮০%"],
-                ["৯ বছর", "৯০%"],
-              ].map(([age, pct], i) => (
-                <tr
-                  key={age}
-                  style={{ backgroundColor: i % 2 === 0 ? "#fff" : "#fafafa" }}
-                >
-                  <td
-                    style={{
-                      border: "1px solid #555",
-                      padding: "7px 14px",
-                      textAlign: "center",
-                    }}
-                  >
-                    {age}
-                  </td>
-                  <td
-                    style={{
-                      border: "1px solid #555",
-                      padding: "7px 14px",
-                      textAlign: "center",
-                    }}
-                  >
-                    অর্পিত বোনাসসহ বীমা অংকের
-                  </td>
-                  <td
-                    style={{
-                      border: "1px solid #555",
-                      padding: "7px 14px",
-                      textAlign: "center",
-                      fontWeight: "700",
-                    }}
-                  >
-                    {pct}
-                  </td>
-                </tr>
-              ))}
-              <tr style={{ backgroundColor: "#e8f4e8" }}>
-                <td
-                  style={{
-                    border: "1px solid #555",
-                    padding: "7px 14px",
-                    textAlign: "center",
-                    fontWeight: "700",
-                  }}
-                >
-                  ১০ বছর ও তদোধিক
-                </td>
-                <td
-                  colSpan={2}
-                  style={{
-                    border: "1px solid #555",
-                    padding: "7px 14px",
-                    textAlign: "center",
-                    fontWeight: "700",
-                  }}
-                >
-                  অর্পিত বোনাসসহ সম্পূর্ণ বীমা অংক
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          <div style={{ fontSize: "19px", lineHeight: 1.6 }}>
+            {deathBenefitRows.map(([age, pct]) => (
+              <div
+                key={age}
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  padding: "2px 0",
+                }}
+              >
+                <span style={{ width: "120px", flexShrink: 0 }}>{age}</span>
+                <span style={{ flex: 1, padding: "0 16px" }}>
+                  অর্পিত বোনাসসহ বীমা অংকের
+                </span>
+                <span style={{ fontWeight: 600, flexShrink: 0 }}>{pct}</span>
+              </div>
+            ))}
+            <p style={{ margin: "6px 0 0", padding: 0 }}>
+              ১০ বছর ও তদোধিক অর্পিত বোনাসসহ সম্পূর্ণ বীমা অংক।
+            </p>
+          </div>
         </div>
 
         {/* Para 7 – no supplementary benefit, no loan */}
