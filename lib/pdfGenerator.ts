@@ -2,30 +2,29 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
 /**
- * Generates a PDF from a DOM element by capturing it as an image
- * Always renders at A4 dimensions regardless of device screen size
- * @param elementId - The ID of the element to capture
- * @param filename - The name of the PDF file to download
+ * Generates a multi-page PDF from a DOM element.
+ * Captures the full content height and splits it into A4 pages.
  */
 export async function generatePDF(
   elementId: string,
-  filename: string = "pension-policy-proposal.pdf"
+  filename: string = "policy-proposal.pdf"
 ) {
   let iframe: HTMLIFrameElement | null = null;
 
   try {
-    // Get the element to capture
     const element = document.getElementById(elementId);
     if (!element) {
       throw new Error(`Element with ID "${elementId}" not found`);
     }
 
-    // A4 dimensions at 96 DPI (standard screen DPI)
-    // A4 = 210mm x 297mm = 8.27" x 11.69" = 794px x 1123px at 96 DPI
+    // A4 at 96 DPI: 794 × 1123 px
     const A4_WIDTH_PX = 794;
     const A4_HEIGHT_PX = 1123;
+    const PADDING_PX = 120; // top+bottom padding in the iframe
 
-    // Create an isolated iframe with fixed A4 dimensions
+    // ------------------------------------------------------------------
+    // Step 1: render in a hidden iframe to measure actual content height
+    // ------------------------------------------------------------------
     iframe = document.createElement("iframe");
     iframe.style.cssText = `
       position: fixed;
@@ -34,11 +33,10 @@ export async function generatePDF(
       width: ${A4_WIDTH_PX}px;
       height: ${A4_HEIGHT_PX}px;
       border: none;
-      overflow: hidden;
+      visibility: hidden;
     `;
     document.body.appendChild(iframe);
 
-    // Wait for iframe to be ready
     await new Promise<void>((resolve) => {
       if (iframe) {
         iframe.onload = () => resolve();
@@ -47,11 +45,8 @@ export async function generatePDF(
     });
 
     const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-    if (!iframeDoc) {
-      throw new Error("Cannot access iframe document");
-    }
+    if (!iframeDoc) throw new Error("Cannot access iframe document");
 
-    // Write minimal HTML with fixed A4 dimensions
     iframeDoc.open();
     iframeDoc.write(`
       <!DOCTYPE html>
@@ -60,22 +55,13 @@ export async function generatePDF(
         <meta charset="utf-8">
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
         <style>
-          * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-          }
+          * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
             background: #ffffff;
             color: #000000;
             font-family: 'Noto Sans Bengali', sans-serif;
             width: ${A4_WIDTH_PX}px;
-            min-height: ${A4_HEIGHT_PX}px;
             overflow: visible;
-          }
-          #content-wrapper {
-            width: ${A4_WIDTH_PX}px;
-            background: #ffffff;
           }
           #content-inner {
             width: 100%;
@@ -89,137 +75,160 @@ export async function generatePDF(
         </style>
       </head>
       <body>
-        <div id="content-wrapper">
-          <div id="content-inner"></div>
-        </div>
+        <div id="content-inner"></div>
       </body>
       </html>
     `);
     iframeDoc.close();
 
-    // Wait for fonts to load in iframe
     if (iframe.contentWindow) {
       await iframe.contentWindow.document.fonts.ready;
     }
 
-    // Clone the content (not the wrapper div, just the inner content)
     const clone = element.cloneNode(true) as HTMLElement;
-
-    // Remove classes and process element
     const processElement = (el: HTMLElement) => {
-      // Remove class attribute to avoid any CSS variable references
       el.removeAttribute("class");
-
-      // Ensure explicit styles
-      if (!el.style.color) {
-        el.style.color = "#000000";
-      }
-
-      // Process all children
+      if (!el.style.color) el.style.color = "#000000";
       Array.from(el.children).forEach((child) => {
-        if (child instanceof HTMLElement) {
-          processElement(child);
-        }
+        if (child instanceof HTMLElement) processElement(child);
       });
     };
-
     processElement(clone);
 
-    // Get the inner content div and append our cloned content
     const contentInner = iframeDoc.getElementById("content-inner");
-    if (!contentInner) {
-      throw new Error("Content wrapper not found in iframe");
+    if (!contentInner) throw new Error("Content wrapper not found in iframe");
+    while (clone.firstChild) contentInner.appendChild(clone.firstChild);
+
+    // Allow layout to settle
+    await new Promise((resolve) => setTimeout(resolve, 600));
+
+    // Measure actual rendered height
+    const fullContentHeight = contentInner.scrollHeight + PADDING_PX;
+
+    // Resize iframe to full content height so nothing is clipped
+    iframe.style.height = `${fullContentHeight}px`;
+    if (iframe.contentWindow) {
+      iframe.contentDocument!.body.style.minHeight = `${fullContentHeight}px`;
     }
 
-    // Move all child nodes from clone to contentInner
-    while (clone.firstChild) {
-      contentInner.appendChild(clone.firstChild);
-    }
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
-    // Wait for rendering to complete
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // ------------------------------------------------------------------
+    // Step 2: capture the full-height canvas
+    // ------------------------------------------------------------------
+    const canvas = await html2canvas(iframeDoc.body, {
+      scale: 2,
+      useCORS: true,
+      logging: false,
+      backgroundColor: "#ffffff",
+      width: A4_WIDTH_PX,
+      height: fullContentHeight,
+      windowWidth: A4_WIDTH_PX,
+      windowHeight: fullContentHeight,
+      foreignObjectRendering: false,
+    });
 
-    try {
-      // Capture the entire body at fixed A4 dimensions
-      const canvas = await html2canvas(iframeDoc.body, {
-        scale: 2, // Higher quality (2x resolution)
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-        width: A4_WIDTH_PX,
-        height: A4_HEIGHT_PX,
-        windowWidth: A4_WIDTH_PX,
-        windowHeight: A4_HEIGHT_PX,
-        foreignObjectRendering: false,
-      });
+    // Remove iframe now that we have the canvas
+    if (iframe.parentNode) document.body.removeChild(iframe);
+    iframe = null;
 
-      // Get canvas dimensions
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
+    // ------------------------------------------------------------------
+    // Step 3: slice canvas into A4 pages, breaking only at blank rows
+    //         so text lines and table rows are never cut in half.
+    // ------------------------------------------------------------------
+    const SCALE = 2;
+    const PAGE_MARGIN_PX = 60 * SCALE;            // top + bottom margin (scaled)
+    const canvasWidth = canvas.width;              // A4_WIDTH_PX * SCALE
+    const canvasHeight = canvas.height;            // fullContentHeight * SCALE
+    const pageHeightCanvas = A4_HEIGHT_PX * SCALE;
+    // Usable content height per page after subtracting top + bottom margins
+    const contentHeightPerPage = pageHeightCanvas - PAGE_MARGIN_PX * 2;
 
-      // PDF dimensions (A4 in mm)
-      const pdfWidth = 210; // mm
-      const pdfHeight = 297; // mm
+    // Read the full canvas pixels once to detect blank (background) rows
+    const srcCtx = canvas.getContext("2d", {
+      willReadFrequently: true,
+    }) as CanvasRenderingContext2D;
+    const pixels = srcCtx.getImageData(0, 0, canvasWidth, canvasHeight).data;
 
-      // Calculate aspect ratios
-      const canvasRatio = imgWidth / imgHeight;
-      const pdfRatio = pdfWidth / pdfHeight;
+    // A row is "blank" when every sampled pixel is (near) white / transparent
+    const isRowBlank = (y: number): boolean => {
+      if (y < 0 || y >= canvasHeight) return false;
+      const rowStart = y * canvasWidth * 4;
+      for (let x = 0; x < canvasWidth; x += 2) {
+        const i = rowStart + x * 4;
+        const a = pixels[i + 3];
+        if (a === 0) continue; // transparent counts as blank
+        if (pixels[i] < 245 || pixels[i + 1] < 245 || pixels[i + 2] < 245) {
+          return false;
+        }
+      }
+      return true;
+    };
 
-      let finalWidth = pdfWidth;
-      let finalHeight = pdfHeight;
-      let marginX = 0;
-      let marginY = 0;
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+      compress: true,
+    });
 
-      // Fit image to page while maintaining aspect ratio
-      if (canvasRatio > pdfRatio) {
-        // Image is wider - fit to width
-        finalHeight = pdfWidth / canvasRatio;
-        marginY = (pdfHeight - finalHeight) / 2;
+    let currentY = 0;
+    let pageIndex = 0;
+
+    while (currentY < canvasHeight) {
+      if (pageIndex > 0) pdf.addPage();
+
+      const idealEnd = currentY + contentHeightPerPage;
+      let sliceEnd: number;
+
+      if (idealEnd >= canvasHeight) {
+        sliceEnd = canvasHeight;
       } else {
-        // Image is taller - fit to height
-        finalWidth = pdfHeight * canvasRatio;
-        marginX = (pdfWidth - finalWidth) / 2;
+        // Search upward from the ideal boundary for a fully-blank row.
+        // Keep at least 20% of the page filled so a single large
+        // unbreakable block (e.g. the table) can be pushed to the next
+        // page without leaving an almost-empty page behind it.
+        let found = -1;
+        const lowerBound = currentY + Math.floor(contentHeightPerPage * 0.2);
+        for (let y = idealEnd; y >= lowerBound; y--) {
+          if (isRowBlank(y)) {
+            found = y;
+            break;
+          }
+        }
+        // Use the blank row if it makes forward progress, else hard cut
+        sliceEnd = found > currentY ? found : idealEnd;
       }
 
-      // Convert canvas to image data
-      const imgData = canvas.toDataURL("image/png", 1.0);
+      const sliceHeight = sliceEnd - currentY;
 
-      // Create PDF document (A4 size, portrait orientation)
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: "a4",
-        compress: true,
-      });
+      const pageCanvas = document.createElement("canvas");
+      pageCanvas.width = canvasWidth;
+      pageCanvas.height = pageHeightCanvas;
 
-      // Add image to PDF
-      pdf.addImage(
-        imgData,
-        "PNG",
-        marginX,
-        marginY,
-        finalWidth,
-        finalHeight,
-        undefined,
-        "FAST"
+      const ctx = pageCanvas.getContext("2d")!;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvasWidth, pageHeightCanvas);
+
+      // Inset by top margin; remaining bottom space stays white
+      ctx.drawImage(
+        canvas,
+        0, currentY, canvasWidth, sliceHeight,
+        0, PAGE_MARGIN_PX, canvasWidth, sliceHeight
       );
 
-      // Download the PDF
-      pdf.save(filename);
-    } finally {
-      // Clean up: remove iframe
-      if (iframe && iframe.parentNode) {
-        document.body.removeChild(iframe);
-      }
-    }
-  } catch (error) {
-    // Make sure to clean up iframe on error
-    if (iframe && iframe.parentNode) {
-      document.body.removeChild(iframe);
+      const pageImgData = pageCanvas.toDataURL("image/png", 1.0);
+      pdf.addImage(pageImgData, "PNG", 0, 0, 210, 297, undefined, "FAST");
+
+      currentY = sliceEnd;
+      pageIndex++;
     }
 
+    pdf.save(filename);
+  } catch (error) {
+    if (iframe && iframe.parentNode) document.body.removeChild(iframe);
     console.error("PDF generation error:", error);
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    throw new Error(`PDF generation failed: ${errorMessage}`);
+    const msg = error instanceof Error ? error.message : String(error);
+    throw new Error(`PDF generation failed: ${msg}`);
   }
 }

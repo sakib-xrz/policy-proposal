@@ -1,158 +1,179 @@
 "use client";
 
-import { useState } from "react";
-import EditableDocument from "@/components/EditableDocument";
-import { generatePDF } from "@/lib/pdfGenerator";
+import Link from "next/link";
+
+const policies = [
+  {
+    href: "/pension",
+    title: "পেনশন পলিসি প্রস্তাব",
+    subtitle: "Pension Policy",
+    description: "আজীবন পেনশনের জন্য নিরাপদ বিনিয়োগ পরিকল্পনা।",
+    icon: (
+      <svg
+        style={{ width: "40px", height: "40px", color: "#2563eb" }}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: "/sisu-nirapotta",
+    title: "শিশু নিরাপত্তা বীমা",
+    subtitle: "Sisu Nirapotta Policy (with profit)",
+    description: "শিশুর ভবিষ্যৎ সুরক্ষায় লাভজনক বীমা পরিকল্পনা।",
+    icon: (
+      <svg
+        style={{ width: "40px", height: "40px", color: "#16a34a" }}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+        />
+      </svg>
+    ),
+  },
+];
 
 export default function Home() {
-  const [isGenerating, setIsGenerating] = useState(false);
-
-  const initialData = {
-    name: "[নাম লিখুন]",
-    age: "[বয়স]",
-    pensionStartAge: "[বছর]",
-    monthlyPension: "[টাকা]",
-    annualPremium: "[টাকা]",
-    depositPeriod: "[বছর]",
-    totalDeposit: "[টাকা]",
-  };
-
-  const handleDownloadPDF = async () => {
-    setIsGenerating(true);
-    try {
-      // Get the name from the editable document
-      const documentContent = document.getElementById(
-        "editable-document-content"
-      );
-      const nameElement = documentContent?.querySelector(
-        ".editable-field"
-      ) as HTMLElement;
-      const name =
-        nameElement?.textContent?.trim() || "pension-policy-proposal";
-
-      // Remove comma and clean the name for filename
-      const cleanName = name.replace(/,/g, "").trim();
-      const filename = cleanName
-        ? `${cleanName}.pdf`
-        : "pension-policy-proposal.pdf";
-
-      await generatePDF("editable-document-content", filename);
-    } catch (error) {
-      console.error("Error generating PDF:", error);
-      alert("PDF generation failed. Please try again.");
-    } finally {
-      setIsGenerating(false);
-    }
-  };
-
   return (
     <div
       style={{
         minHeight: "100vh",
         backgroundColor: "#f5f5f5",
-        padding: "40px 20px",
+        padding: "60px 20px",
         fontFamily: "Noto Sans Bengali, sans-serif",
       }}
     >
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
-        {/* Header */}
-        <div
-          style={{
-            marginBottom: "30px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: "20px",
-          }}
-        >
+      <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+        <div style={{ textAlign: "center", marginBottom: "48px" }}>
           <h1
             style={{
-              fontSize: "28px",
+              fontSize: "32px",
               fontWeight: "700",
               color: "#1a1a1a",
-              margin: 0,
+              margin: "0 0 8px 0",
             }}
           >
-            পেনশন পলিসি প্রস্তাব
+            পলিসি প্রস্তাব
           </h1>
-          <button
-            onClick={handleDownloadPDF}
-            disabled={isGenerating}
-            style={{
-              backgroundColor: "#2563eb",
-              color: "white",
-              fontWeight: "600",
-              padding: "12px 24px",
-              borderRadius: "6px",
-              border: "none",
-              cursor: isGenerating ? "not-allowed" : "pointer",
-              opacity: isGenerating ? 0.6 : 1,
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              fontSize: "15px",
-              transition: "background-color 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              if (!isGenerating) {
-                e.currentTarget.style.backgroundColor = "#1d4ed8";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isGenerating) {
-                e.currentTarget.style.backgroundColor = "#2563eb";
-              }
-            }}
-          >
-            {isGenerating ? (
-              <>
-                <svg
-                  className="animate-spin h-5 w-5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-                PDF তৈরি হচ্ছে...
-              </>
-            ) : (
-              <>
-                <svg
-                  style={{ width: "20px", height: "20px" }}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                PDF ডাউনলোড করুন
-              </>
-            )}
-          </button>
+          <p style={{ fontSize: "16px", color: "#6b7280", margin: 0 }}>
+            একটি পলিসি বেছে নিন
+          </p>
         </div>
 
-        {/* Editable Document */}
-        <div id="editable-document">
-          <EditableDocument initialData={initialData} />
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "24px",
+          }}
+        >
+          {policies.map((policy) => (
+            <Link
+              key={policy.href}
+              href={policy.href}
+              style={{ textDecoration: "none" }}
+            >
+              <div
+                style={{
+                  backgroundColor: "#ffffff",
+                  borderRadius: "12px",
+                  padding: "32px",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
+                  border: "1px solid #e5e7eb",
+                  cursor: "pointer",
+                  transition: "box-shadow 0.2s, transform 0.15s",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "16px",
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLDivElement).style.boxShadow =
+                    "0 10px 25px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.06)";
+                  (e.currentTarget as HTMLDivElement).style.transform =
+                    "translateY(-2px)";
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLDivElement).style.boxShadow =
+                    "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)";
+                  (e.currentTarget as HTMLDivElement).style.transform =
+                    "translateY(0)";
+                }}
+              >
+                <div>{policy.icon}</div>
+                <div>
+                  <h2
+                    style={{
+                      fontSize: "22px",
+                      fontWeight: "700",
+                      color: "#1a1a1a",
+                      margin: "0 0 4px 0",
+                    }}
+                  >
+                    {policy.title}
+                  </h2>
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      color: "#9ca3af",
+                      margin: "0 0 10px 0",
+                      fontFamily: "sans-serif",
+                    }}
+                  >
+                    {policy.subtitle}
+                  </p>
+                  <p
+                    style={{
+                      fontSize: "15px",
+                      color: "#6b7280",
+                      margin: 0,
+                      lineHeight: "1.6",
+                    }}
+                  >
+                    {policy.description}
+                  </p>
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    fontSize: "14px",
+                    color: "#2563eb",
+                    fontWeight: "600",
+                  }}
+                >
+                  <span>প্রস্তাব তৈরি করুন</span>
+                  <svg
+                    style={{ width: "16px", height: "16px" }}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
       </div>
     </div>
