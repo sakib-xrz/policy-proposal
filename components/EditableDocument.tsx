@@ -266,6 +266,12 @@ export default function EditableDocument({
           </li>
         </ul>
       </div>
+
+      {/* Para 8 – annual income */}
+      <p style={{ marginTop: "8px", color: "#00ab41", fontWeight: "700" }}>
+        এছাড়া প্রতিবছর আপনার বার্ষিক আয়ের ১৫% প্রিমিয়াম হিসাবে সঞ্চয় দেখাতে
+        পারবেন। এটি ট্যাক্স ফ্রি।
+      </p>
     </div>
   );
 }

@@ -8,6 +8,7 @@ interface SisuNirapottaDocumentProps {
   initialData: {
     name: string;
     age: string;
+    childRelation: string;
     childAge: string;
     insuranceAmount: string;
     policyTerm: string;
@@ -60,6 +61,7 @@ export default function SisuNirapottaDocument({
 }: SisuNirapottaDocumentProps) {
   const nameRef = useRef<HTMLSpanElement>(null);
   const ageRef = useRef<HTMLSpanElement>(null);
+  const childRelationRef = useRef<HTMLSpanElement>(null);
   const childAgeRef = useRef<HTMLSpanElement>(null);
   const insuranceAmountRef = useRef<HTMLSpanElement>(null);
   const policyTermRef = useRef<HTMLSpanElement>(null);
@@ -78,6 +80,7 @@ export default function SisuNirapottaDocument({
     };
     seed(nameRef, initialData.name);
     seed(ageRef, initialData.age);
+    seed(childRelationRef, initialData.childRelation);
     seed(childAgeRef, initialData.childAge);
     seed(insuranceAmountRef, initialData.insuranceAmount);
     seed(policyTermRef, initialData.policyTerm);
@@ -152,7 +155,16 @@ export default function SisuNirapottaDocument({
 
       {/* Child age */}
       <div style={{ marginBottom: "4px" }}>
-        <span>বাবুর বয়স </span>
+        <span
+          ref={childRelationRef}
+          contentEditable
+          suppressContentEditableWarning
+          style={fieldStyle}
+          onPaste={handlePaste}
+          onKeyDown={handleKeyDown}
+          className="editable-field"
+        />
+        <span>এর বর্তমান বয়স </span>
         <span
           ref={childAgeRef}
           contentEditable
@@ -240,7 +252,7 @@ export default function SisuNirapottaDocument({
           style={{
             fontSize: "26px",
             fontWeight: "700",
-            color: "#000000",
+            color: "#00ab41",
             margin: 0,
             textDecoration: "underline",
           }}
@@ -253,7 +265,7 @@ export default function SisuNirapottaDocument({
       <div style={{ lineHeight: "2", textAlign: "justify" }}>
         {/* Para 1 – joint life, proposer rules */}
         <p style={{ marginBottom: "16px" }}>
-          এই বীমা পরিকল্পনার যুগাভাবে প্রিমিয়ামদাতা ও শিশুর জীবনের উপর দেওয়া
+          এই বীমা পরিকল্পনার যুগ্মভাবে প্রিমিয়ামদাতা ও শিশুর জীবনের উপর দেওয়া
           হয়। সাধারণত: শিশুর পিতা এই পরিকল্পনা প্রিমিয়ামদাতা বলে বিবেচিত হন।
           যদি পিতা জীবিত না থাকেন অথবা বীমা গ্রহণে অযোগ্য বলে বিবেচিত হন তাহলে
           শিশুর মাতা পরিকল্পনায় প্রিমিয়ামদাতা হতে পারেন। শিশুর মাতাকে সে
@@ -278,31 +290,33 @@ export default function SisuNirapottaDocument({
         </p>
 
         {/* Para 4 – multi-protection + (ক) and (খ) */}
-        <p style={{ marginBottom: "8px" }}>
+        <p style={{ marginBottom: "8px", color: "#00ab41", fontWeight: "700" }}>
           এই পরিকল্পনার অধীনে শিশুর জন্য বহুমুখী নিরাপত্তা প্রদান করা হয়। যদি
           মেয়াদ-পূর্তির পূর্বে প্রিমিয়ামদাতার মৃত্যু হয় তাহলে মৃত্যুর দিন
           থেকে মেয়াদপূর্তি পর্যন্ত দেয় প্রিমিয়াম মওকুফ হয়ে যায় এবং শিশুকে
-          নিম্নোক্ত সুবিধাসমূহ দেওয়া হয় :
+          নিম্নোক্ত সুবিধাসমূহ দেওয়া হয়:
         </p>
-        <p style={{ marginBottom: "8px" }}>
+        <p style={{ marginBottom: "8px", color: "#FF0000" }}>
           <strong>(ক)</strong> প্রতি হাজার বীমার জন্য বার্ষিক ১০০ টাকা হারে
           মৃত্যু কাল হতে শুরু করে মেয়াদপূর্তি পর্যন্ত অথবা মেয়াদপূর্তির পূর্বে
           শিশুর মৃত্যু হলে শিশুর মৃত্যুর দিন পর্যন্ত দেওয়া হয়।
         </p>
-        <p style={{ marginBottom: "16px" }}>
+        <p style={{ marginBottom: "16px", color: "#FF0000" }}>
           <strong>(খ)</strong> মেয়াদ অন্তে অর্পিত বোনাসসহ বীমার সম্পূর্ণ টাকা
           প্রদান করা হয়। এই সুবিধাগুলি বীমাকাল পর্যন্ত এবং পরবর্তী সময়ের জন্যও
           শিশুর নিরাপত্তা ব্যবস্থা করে দেয়।
         </p>
 
         {/* Para 5 – both survive to maturity */}
-        <p style={{ marginBottom: "16px" }}>
+        <p
+          style={{ marginBottom: "16px", color: "#00ab41", fontWeight: "700" }}
+        >
           যদি প্রিমিয়াম দাতা ও শিশু দুজনেই বীমার মেয়াদ-পূর্তি পর্যন্ত বেঁচে
           থাকেন, তাহলে মেয়াদ অন্তে অর্পিত বোনাসসহ বীমাকৃত অর্থ প্রদান করা হয়।
         </p>
 
         {/* Para 6 – child dies before maturity + death benefit chart */}
-        <p style={{ marginBottom: "12px" }}>
+        <p style={{ marginBottom: "12px", fontWeight: "700" }}>
           যদি মেয়াদ-পূর্তির পূর্বে শিশুর মৃত্যু হয় তাহলে নিম্নে বর্ণিত তালিকা
           অনুসারে বীমার টাকা প্রিমিয়ামদাতাকে দেওয়া হয়।
         </p>
@@ -344,6 +358,12 @@ export default function SisuNirapottaDocument({
         <p style={{ marginBottom: "8px" }}>
           এই বীমার সঙ্গে কোনো অতিরিক্ত সুবিধার বীমা গ্রহণ করা যায় না। এই বীমার
           সম্পর্ণ মূল্য দেয় হয় লোন দেওয়া হয় না।
+        </p>
+
+        {/* Para 8 – annual income */}
+        <p style={{ marginBottom: "8px", color: "#00ab41", fontWeight: "700" }}>
+          এছাড়া প্রতিবছর আপনার বার্ষিক আয়ের ১৫% প্রিমিয়াম হিসাবে সঞ্চয়
+          দেখাতে পারবেন। এটি ট্যাক্স ফ্রি।
         </p>
       </div>
     </div>

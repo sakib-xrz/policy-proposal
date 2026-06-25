@@ -23,10 +23,10 @@ export default function PolicyEditorLayout({
     setIsGenerating(true);
     try {
       const documentContent = document.getElementById(
-        "editable-document-content"
+        "editable-document-content",
       );
       const nameElement = documentContent?.querySelector(
-        ".editable-field"
+        ".editable-field",
       ) as HTMLElement;
       const name = nameElement?.textContent?.trim() || defaultFilename;
       const cleanName = name.replace(/,/g, "").trim();
@@ -62,7 +62,14 @@ export default function PolicyEditorLayout({
             gap: "20px",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: "16px",
+            }}
+          >
             <Link
               href={backHref}
               style={{

@@ -7,6 +7,7 @@ export default function SisuNirapottaPage() {
   const initialData = {
     name: "[নাম লিখুন]",
     age: "[বয়স]",
+    childRelation: "[বাবুর]",
     childAge: "[বয়স]",
     insuranceAmount: "[টাকা]",
     policyTerm: "[বছর]",
