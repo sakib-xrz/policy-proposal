@@ -289,7 +289,7 @@ export default function PensionPolicyDocument({
             • প্রদত্ত প্রিমিয়ামের উপর আয়কর রেয়াত পাওয়া যাবে।
           </li>
           <li style={{ marginBottom: "12px", paddingLeft: "4px" }}>
-            • এই বীমার সঙ্গে অতিরিক্ত সুবিধাবর বীমা Supplementary benefit গ্রহণ
+            • এই বীমার সঙ্গে অতিরিক্ত সুবিধার বীমা Supplementary benefit গ্রহণ
             করা যাবে।
           </li>
           <li style={{ marginBottom: "0", paddingLeft: "4px" }}>
