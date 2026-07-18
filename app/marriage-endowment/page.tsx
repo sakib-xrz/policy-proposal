@@ -9,6 +9,7 @@ export default function MarriageEndowmentPage() {
     age: "[বয়স]",
     insuranceAmount: "[অংক]",
     policyTerm: "[মেয়াদ]",
+    annualPremium: "[টাকা]",
     totalDeposit: "[টাকা]",
     maturityAmount: "[টাকা]",
   };

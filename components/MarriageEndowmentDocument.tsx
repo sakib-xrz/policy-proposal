@@ -10,6 +10,7 @@ interface MarriageEndowmentDocumentProps {
     age: string;
     insuranceAmount: string;
     policyTerm: string;
+    annualPremium: string;
     totalDeposit: string;
     maturityAmount: string;
   };
@@ -87,6 +88,7 @@ export default function MarriageEndowmentDocument({
   const ageRef = useRef<HTMLSpanElement>(null);
   const insuranceAmountRef = useRef<HTMLSpanElement>(null);
   const policyTermRef = useRef<HTMLSpanElement>(null);
+  const annualPremiumRef = useRef<HTMLSpanElement>(null);
   const totalDepositRef = useRef<HTMLSpanElement>(null);
   const maturityAmountRef = useRef<HTMLSpanElement>(null);
 
@@ -103,6 +105,7 @@ export default function MarriageEndowmentDocument({
     seed(ageRef, initialData.age);
     seed(insuranceAmountRef, initialData.insuranceAmount);
     seed(policyTermRef, initialData.policyTerm);
+    seed(annualPremiumRef, initialData.annualPremium);
     seed(totalDepositRef, initialData.totalDeposit);
     seed(maturityAmountRef, initialData.maturityAmount);
   }, [initialData]);
@@ -243,6 +246,21 @@ export default function MarriageEndowmentDocument({
             className="editable-field"
           />
           <span> বছর।</span>
+        </div>
+
+        {/* Annual premium */}
+        <div style={{ marginBottom: "8px", color: "#00ab41" }}>
+          <span>বার্ষিক প্রিমিয়াম </span>
+          <span
+            ref={annualPremiumRef}
+            contentEditable
+            suppressContentEditableWarning
+            style={fieldStyle}
+            onPaste={handlePaste}
+            onKeyDown={handleKeyDown}
+            className="editable-field"
+          />
+          <span> /= টাকা।</span>
         </div>
 
         {/* Total deposit */}

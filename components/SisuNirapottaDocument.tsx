@@ -193,7 +193,7 @@ export default function SisuNirapottaDocument({
       </div>
 
       {/* Policy term */}
-      <div style={{ marginBottom: "16px" }}>
+      <div style={{ marginBottom: "4px" }}>
         <span>বীমার মেয়াদ </span>
         <span
           ref={policyTermRef}
