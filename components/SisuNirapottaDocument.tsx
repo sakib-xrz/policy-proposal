@@ -15,6 +15,9 @@ interface SisuNirapottaDocumentProps {
     annualPremium: string;
     maturityYears: string;
     maturityAmount: string;
+    maturityAmountEq: string;
+    bonusAmount: string;
+    totalMaturityAmount: string;
   };
 }
 
@@ -68,6 +71,9 @@ export default function SisuNirapottaDocument({
   const annualPremiumRef = useRef<HTMLSpanElement>(null);
   const maturityYearsRef = useRef<HTMLSpanElement>(null);
   const maturityAmountRef = useRef<HTMLSpanElement>(null);
+  const maturityAmountEqRef = useRef<HTMLSpanElement>(null);
+  const bonusAmountRef = useRef<HTMLSpanElement>(null);
+  const totalMaturityAmountRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     const seed = (
@@ -87,6 +93,9 @@ export default function SisuNirapottaDocument({
     seed(annualPremiumRef, initialData.annualPremium);
     seed(maturityYearsRef, initialData.maturityYears);
     seed(maturityAmountRef, initialData.maturityAmount);
+    seed(maturityAmountEqRef, initialData.maturityAmountEq);
+    seed(bonusAmountRef, initialData.bonusAmount);
+    seed(totalMaturityAmountRef, initialData.totalMaturityAmount);
   }, [initialData]);
 
   return (
@@ -243,22 +252,78 @@ export default function SisuNirapottaDocument({
           ref={maturityYearsRef}
           contentEditable
           suppressContentEditableWarning
-          style={fieldStyle}
+          style={{ ...fieldStyle, color: "#00ab41", fontWeight: "700" }}
           onPaste={handlePaste}
           onKeyDown={handleKeyDown}
           className="editable-field"
         />
-        <span> বছর পর ফেরত পাওয়া যাবে </span>
+        <span style={{ color: "#00ab41", fontWeight: "700" }}>
+          {" "}
+          বছর পর ফেরত পাওয়া যাবে{" "}
+        </span>
         <span
           ref={maturityAmountRef}
           contentEditable
           suppressContentEditableWarning
-          style={fieldStyle}
+          style={{ ...fieldStyle, color: "#00ab41", fontWeight: "700" }}
           onPaste={handlePaste}
           onKeyDown={handleKeyDown}
           className="editable-field"
         />
-        <span>/= টাকা।</span>
+        <span style={{ color: "#00ab41", fontWeight: "700" }}>
+          {" "}
+          /= টাকা +{" "}
+        </span>
+        <span style={{ color: "#00ab41", fontWeight: "700" }}>
+          {" "}
+          অর্জিত বোনাস (বর্তমান বোনাসের হার অনুযায়ী){" "}
+        </span>
+        <span style={{ color: "#00ab41", fontWeight: "700" }}>
+          <span style={{ color: "#00ab41", fontWeight: "700" }}>= </span>
+          <span
+            ref={maturityAmountEqRef}
+            contentEditable
+            suppressContentEditableWarning
+            style={{ ...fieldStyle, color: "#00ab41", fontWeight: "700" }}
+            onPaste={handlePaste}
+            onKeyDown={handleKeyDown}
+            className="editable-field"
+          />
+          <span> + </span>
+          <span
+            ref={bonusAmountRef}
+            contentEditable
+            suppressContentEditableWarning
+            style={{ ...fieldStyle, color: "#00ab41", fontWeight: "700" }}
+            onPaste={handlePaste}
+            onKeyDown={handleKeyDown}
+            className="editable-field"
+          />
+          <span>
+            <strong
+              style={{
+                color: "#0000FF",
+                fontWeight: "700",
+                fontSize: "24px",
+              }}
+            >
+              (±)
+            </strong>{" "}
+            =/ টাকা।{" "}
+          </span>
+          <br />
+          <span>= </span>
+          <span
+            ref={totalMaturityAmountRef}
+            contentEditable
+            suppressContentEditableWarning
+            style={{ ...fieldStyle, color: "#00ab41", fontWeight: "700" }}
+            onPaste={handlePaste}
+            onKeyDown={handleKeyDown}
+            className="editable-field"
+          />
+          <span> /= টাকা।</span>
+        </span>
       </div>
 
       {/* Static policy description */}

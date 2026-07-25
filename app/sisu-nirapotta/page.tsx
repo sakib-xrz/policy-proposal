@@ -14,6 +14,9 @@ export default function SisuNirapottaPage() {
     annualPremium: "[টাকা]",
     maturityYears: "[বছর]",
     maturityAmount: "[টাকা]",
+    maturityAmountEq: "[টাকা]",
+    bonusAmount: "[বোনাস]",
+    totalMaturityAmount: "[টাকা]",
   };
 
   return (

@@ -12,6 +12,9 @@ export default function MarriageEndowmentPage() {
     annualPremium: "[টাকা]",
     totalDeposit: "[টাকা]",
     maturityAmount: "[টাকা]",
+    maturityAmountEq: "[টাকা]",
+    bonusAmount: "[বোনাস]",
+    totalMaturityAmount: "[টাকা]",
   };
 
   return (
