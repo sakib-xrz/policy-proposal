@@ -92,6 +92,21 @@ export default function PensionPolicyDocument({
           style={{ height: "120px", objectFit: "contain" }}
         />
       </header>
+
+      {/* Policy title */}
+      <div style={{ textAlign: "center", margin: "28px 0 24px" }}>
+        <h2
+          style={{
+            fontSize: "26px",
+            fontWeight: "700",
+            color: "#00ab41",
+            margin: 0,
+            textDecoration: "underline",
+          }}
+        >
+          পেনশন পলিসি (লাভসহ)
+        </h2>
+      </div>
       {/* Name - Editable */}
       <div style={{ marginBottom: "8px" }}>
         <span

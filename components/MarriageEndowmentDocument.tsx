@@ -179,6 +179,21 @@ export default function MarriageEndowmentDocument({
           />
         </header>
 
+        {/* Policy title */}
+        <div style={{ textAlign: "center", margin: "28px 0 24px" }}>
+          <h2
+            style={{
+              fontSize: "26px",
+              fontWeight: "700",
+              color: "#00ab41",
+              margin: 0,
+              textDecoration: "underline",
+            }}
+          >
+            ম্যারেজ এন্ডাওমেন্ট পলিসি (লাভসহ)
+          </h2>
+        </div>
+
         {/* Name - Editable */}
         <div style={{ marginBottom: "8px" }}>
           <span
@@ -291,21 +306,6 @@ export default function MarriageEndowmentDocument({
             className="editable-field"
           />
           <span> /= টাকা।</span>
-        </div>
-
-        {/* Policy title */}
-        <div style={{ textAlign: "center", margin: "28px 0 24px" }}>
-          <h2
-            style={{
-              fontSize: "26px",
-              fontWeight: "700",
-              color: "#00ab41",
-              margin: 0,
-              textDecoration: "underline",
-            }}
-          >
-            ম্যারেজ এন্ডাওমেন্ট পলিসি (লাভসহ)
-          </h2>
         </div>
 
         {/* Features Section - Static */}

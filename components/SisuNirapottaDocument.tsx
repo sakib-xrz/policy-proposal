@@ -114,6 +114,21 @@ export default function SisuNirapottaDocument({
         />
       </header>
 
+      {/* Policy title */}
+      <div style={{ textAlign: "center", margin: "28px 0 24px" }}>
+        <h2
+          style={{
+            fontSize: "26px",
+            fontWeight: "700",
+            color: "#00ab41",
+            margin: 0,
+            textDecoration: "underline",
+          }}
+        >
+          শিশু নিরাপত্তা বীমা (লাভসহ)
+        </h2>
+      </div>
+
       {/* Name */}
       <div style={{ marginBottom: "8px" }}>
         <span
@@ -244,21 +259,6 @@ export default function SisuNirapottaDocument({
           className="editable-field"
         />
         <span>/= টাকা।</span>
-      </div>
-
-      {/* Policy title */}
-      <div style={{ textAlign: "center", margin: "28px 0 24px" }}>
-        <h2
-          style={{
-            fontSize: "26px",
-            fontWeight: "700",
-            color: "#00ab41",
-            margin: 0,
-            textDecoration: "underline",
-          }}
-        >
-          শিশু নিরাপত্তা বীমা (লাভসহ)
-        </h2>
       </div>
 
       {/* Static policy description */}
