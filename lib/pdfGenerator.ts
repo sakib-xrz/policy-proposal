@@ -78,7 +78,7 @@ export async function generatePDF(
           #content-inner {
             width: 100%;
             background: #ffffff;
-            padding: 60px 80px;
+            padding: 28px 80px 50px;
             font-family: 'Noto Sans Bengali', sans-serif;
             line-height: 1.8;
             font-size: ${20 * PDF_FONT_SCALE}px;
@@ -149,12 +149,17 @@ export async function generatePDF(
     //         so text lines and table rows are never cut in half.
     // ------------------------------------------------------------------
     const SCALE = 2;
-    const PAGE_MARGIN_PX = 60 * SCALE;            // top + bottom margin (scaled)
+    const PAGE_MARGIN_PX = 40 * SCALE;            // top + bottom margin (scaled)
+    // First page: light top inset (content already has its own padding)
+    const FIRST_PAGE_TOP_MARGIN_PX = 16 * SCALE;
     const canvasWidth = canvas.width;              // A4_WIDTH_PX * SCALE
     const canvasHeight = canvas.height;            // fullContentHeight * SCALE
     const pageHeightCanvas = A4_HEIGHT_PX * SCALE;
-    // Usable content height per page after subtracting top + bottom margins
+    // Usable content height for pages 2+ after subtracting top + bottom margins
     const contentHeightPerPage = pageHeightCanvas - PAGE_MARGIN_PX * 2;
+    // First page has more room (no extra top margin on top of content padding)
+    const firstPageContentHeight =
+      pageHeightCanvas - FIRST_PAGE_TOP_MARGIN_PX - PAGE_MARGIN_PX;
 
     // Read the full canvas pixels once to detect blank (background) rows
     const srcCtx = canvas.getContext("2d", {
@@ -200,7 +205,15 @@ export async function generatePDF(
     while (currentY < effectiveCanvasHeight) {
       if (pageIndex > 0) pdf.addPage();
 
-      const idealEnd = currentY + contentHeightPerPage;
+      const isFirstPage = pageIndex === 0;
+      const topMargin = isFirstPage
+        ? FIRST_PAGE_TOP_MARGIN_PX
+        : PAGE_MARGIN_PX;
+      const pageContentHeight = isFirstPage
+        ? firstPageContentHeight
+        : contentHeightPerPage;
+
+      const idealEnd = currentY + pageContentHeight;
       let sliceEnd: number;
 
       if (idealEnd >= effectiveCanvasHeight) {
@@ -211,7 +224,7 @@ export async function generatePDF(
         // unbreakable block (e.g. the table) can be pushed to the next
         // page without leaving an almost-empty page behind it.
         let found = -1;
-        const lowerBound = currentY + Math.floor(contentHeightPerPage * 0.2);
+        const lowerBound = currentY + Math.floor(pageContentHeight * 0.2);
         for (let y = idealEnd; y >= lowerBound; y--) {
           if (isRowBlank(y)) {
             found = y;
@@ -236,7 +249,7 @@ export async function generatePDF(
       ctx.drawImage(
         canvas,
         0, currentY, canvasWidth, sliceHeight,
-        0, PAGE_MARGIN_PX, canvasWidth, sliceHeight
+        0, topMargin, canvasWidth, sliceHeight
       );
 
       const pageImgData = pageCanvas.toDataURL("image/png", 1.0);
