@@ -87,7 +87,7 @@ export default function EditableDocument({
             textDecoration: "underline",
           }}
         >
-          পেনশন পলিসি (লাভসহ)
+          জেবিসি পেনশন পলিসি
         </h2>
       </div>
       {/* Name - Editable */}

@@ -104,7 +104,7 @@ export default function PensionPolicyDocument({
             textDecoration: "underline",
           }}
         >
-          পেনশন পলিসি (লাভসহ)
+          জেবিসি পেনশন পলিসি
         </h2>
       </div>
       {/* Name - Editable */}
