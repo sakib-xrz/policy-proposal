@@ -21,6 +21,7 @@ export default function SisuNirapottaPage() {
 
   return (
     <PolicyEditorLayout
+      policyId="sisu-nirapotta"
       title="শিশু নিরাপত্তা বীমা প্রস্তাব"
       defaultFilename="sisu-nirapotta-proposal.pdf"
     >

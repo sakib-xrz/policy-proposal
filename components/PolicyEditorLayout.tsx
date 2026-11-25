@@ -1,10 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { generatePDF } from "@/lib/pdfGenerator";
+import {
+  createDraftId,
+  deletePolicyDraft,
+  getPolicyDraft,
+  PolicyId,
+  savePolicyDraft,
+} from "@/lib/policyDrafts";
 
 interface PolicyEditorLayoutProps {
+  policyId: PolicyId;
   title: string;
   defaultFilename: string;
   backHref?: string;
@@ -12,12 +20,109 @@ interface PolicyEditorLayoutProps {
 }
 
 export default function PolicyEditorLayout({
+  policyId,
   title,
   defaultFilename,
   backHref = "/",
   children,
 }: PolicyEditorLayoutProps) {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [saveStatus, setSaveStatus] = useState("");
+  const activeDraftIdRef = useRef<string | null>(null);
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isRestoringRef = useRef(false);
+
+  const persistDraft = useCallback(
+    (isAutomatic = false) => {
+      const editor = document.getElementById("editable-document");
+      if (!editor || isRestoringRef.current) return;
+
+      const fields = Array.from(
+        editor.querySelectorAll<HTMLElement>(".editable-field"),
+      ).map((field) => field.textContent ?? "");
+      if (fields.length === 0) return;
+
+      const radioValues: Record<string, string> = {};
+      editor
+        .querySelectorAll<HTMLInputElement>('input[type="radio"]:checked')
+        .forEach((radio) => {
+          if (radio.name) radioValues[radio.name] = radio.value;
+        });
+
+      const rawName = fields[0]?.trim();
+      const customerName =
+        rawName && !/^\[.*\]$/.test(rawName) ? rawName : "নামহীন গ্রাহক";
+      const id = activeDraftIdRef.current ?? createDraftId();
+      activeDraftIdRef.current = id;
+
+      savePolicyDraft({
+        id,
+        policyId,
+        policyTitle: title,
+        customerName,
+        snapshot: { fields, radioValues },
+      });
+
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("draft") !== id) {
+        url.searchParams.set("draft", id);
+        window.history.replaceState({}, "", url);
+      }
+
+      setSaveStatus(
+        isAutomatic ? "স্বয়ংক্রিয়ভাবে সংরক্ষিত" : "ড্রাফট সংরক্ষিত হয়েছে",
+      );
+    },
+    [policyId, title],
+  );
+
+  useEffect(() => {
+    const editor = document.getElementById("editable-document");
+    if (!editor) return;
+
+    const draftId = new URL(window.location.href).searchParams.get("draft");
+    const draft = draftId ? getPolicyDraft(draftId) : undefined;
+
+    if (draft && draft.policyId === policyId) {
+      activeDraftIdRef.current = draft.id;
+      isRestoringRef.current = true;
+
+      Object.entries(draft.snapshot.radioValues).forEach(([name, value]) => {
+        const radios = Array.from(
+          editor.querySelectorAll<HTMLInputElement>(
+            `input[type="radio"][name="${name}"]`,
+          ),
+        );
+        radios.find((radio) => radio.value === value)?.click();
+      });
+
+      window.setTimeout(() => {
+        const fields = editor.querySelectorAll<HTMLElement>(".editable-field");
+        fields.forEach((field, index) => {
+          if (draft.snapshot.fields[index] !== undefined) {
+            field.textContent = draft.snapshot.fields[index];
+          }
+        });
+        isRestoringRef.current = false;
+        setSaveStatus("ড্রাফট পুনরুদ্ধার করা হয়েছে");
+      }, 0);
+    }
+
+    const scheduleAutoSave = () => {
+      if (isRestoringRef.current) return;
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+      autoSaveTimerRef.current = setTimeout(() => persistDraft(true), 800);
+    };
+
+    editor.addEventListener("input", scheduleAutoSave);
+    editor.addEventListener("change", scheduleAutoSave);
+
+    return () => {
+      editor.removeEventListener("input", scheduleAutoSave);
+      editor.removeEventListener("change", scheduleAutoSave);
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+  }, [persistDraft, policyId]);
 
   const handleDownloadPDF = async () => {
     setIsGenerating(true);
@@ -33,6 +138,18 @@ export default function PolicyEditorLayout({
       const filename = cleanName ? `${cleanName}.pdf` : defaultFilename;
 
       await generatePDF("editable-document-content", filename);
+
+      if (
+        activeDraftIdRef.current &&
+        window.confirm("PDF তৈরি হয়েছে। এই ড্রাফটটি মুছে ফেলতে চান?")
+      ) {
+        deletePolicyDraft(activeDraftIdRef.current);
+        activeDraftIdRef.current = null;
+        const url = new URL(window.location.href);
+        url.searchParams.delete("draft");
+        window.history.replaceState({}, "", url);
+        setSaveStatus("ড্রাফট মুছে ফেলা হয়েছে");
+      }
     } catch (error) {
       console.error("Error generating PDF:", error);
       alert("PDF generation failed. Please try again.");
@@ -115,78 +232,59 @@ export default function PolicyEditorLayout({
             </h1>
           </div>
 
-          <button
-            onClick={handleDownloadPDF}
-            disabled={isGenerating}
+          <div
             style={{
-              backgroundColor: "#2563eb",
-              color: "white",
-              fontWeight: "600",
-              padding: "12px 24px",
-              borderRadius: "6px",
-              border: "none",
-              cursor: isGenerating ? "not-allowed" : "pointer",
-              opacity: isGenerating ? 0.6 : 1,
               display: "flex",
               alignItems: "center",
-              gap: "8px",
-              fontSize: "15px",
-              transition: "background-color 0.2s",
-            }}
-            onMouseEnter={(e) => {
-              if (!isGenerating) {
-                e.currentTarget.style.backgroundColor = "#1d4ed8";
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isGenerating) {
-                e.currentTarget.style.backgroundColor = "#2563eb";
-              }
+              justifyContent: "flex-end",
+              flexWrap: "wrap",
+              gap: "10px",
             }}
           >
-            {isGenerating ? (
-              <>
-                <svg
-                  className="animate-spin h-5 w-5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-                PDF তৈরি হচ্ছে...
-              </>
-            ) : (
-              <>
-                <svg
-                  style={{ width: "20px", height: "20px" }}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                PDF ডাউনলোড করুন
-              </>
+            {saveStatus && (
+              <span style={{ color: "#16a34a", fontSize: "13px" }}>
+                {saveStatus}
+              </span>
             )}
-          </button>
+            <button
+              type="button"
+              onClick={() => persistDraft(false)}
+              style={{
+                minHeight: "44px",
+                padding: "10px 16px",
+                border: "1px solid #2563eb",
+                borderRadius: "6px",
+                backgroundColor: "#ffffff",
+                color: "#2563eb",
+                cursor: "pointer",
+                fontFamily: "inherit",
+                fontSize: "15px",
+                fontWeight: "600",
+              }}
+            >
+              ড্রাফট সংরক্ষণ করুন
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadPDF}
+              disabled={isGenerating}
+              style={{
+                minHeight: "44px",
+                padding: "10px 16px",
+                border: "none",
+                borderRadius: "6px",
+                backgroundColor: "#2563eb",
+                color: "#ffffff",
+                cursor: isGenerating ? "not-allowed" : "pointer",
+                opacity: isGenerating ? 0.6 : 1,
+                fontFamily: "inherit",
+                fontSize: "15px",
+                fontWeight: "600",
+              }}
+            >
+              {isGenerating ? "PDF তৈরি হচ্ছে..." : "PDF ডাউনলোড করুন"}
+            </button>
+          </div>
         </div>
 
         {/* Document */}

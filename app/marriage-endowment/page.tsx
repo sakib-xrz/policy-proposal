@@ -19,6 +19,7 @@ export default function MarriageEndowmentPage() {
 
   return (
     <PolicyEditorLayout
+      policyId="marriage-endowment"
       title="ম্যারেজ এন্ডাওমেন্ট পলিসি (লাভসহ)"
       defaultFilename="marriage-endowment-proposal.pdf"
     >

@@ -24,6 +24,7 @@ export default function ThreeInstalmentPage() {
 
   return (
     <PolicyEditorLayout
+      policyId="three-instalment"
       title="৩ কিস্তি বীমা (লাভসহ)"
       defaultFilename="3-kisti-bima-proposal.pdf"
     >

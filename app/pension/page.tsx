@@ -16,6 +16,7 @@ export default function PensionPage() {
 
   return (
     <PolicyEditorLayout
+      policyId="pension"
       title="পেনশন পলিসি প্রস্তাব"
       defaultFilename="pension-policy-proposal.pdf"
     >

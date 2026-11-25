@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import PolicyDraftsButton from "@/components/PolicyDraftsButton";
 
 const policies = [
   {
     href: "/pension",
+    policyId: "pension" as const,
     title: "পেনশন পলিসি প্রস্তাব",
     subtitle: "Pension Policy",
     description: "আজীবন পেনশনের জন্য নিরাপদ বিনিয়োগ পরিকল্পনা।",
@@ -26,6 +28,7 @@ const policies = [
   },
   {
     href: "/sisu-nirapotta",
+    policyId: "sisu-nirapotta" as const,
     title: "শিশু নিরাপত্তা বীমা",
     subtitle: "Sisu Nirapotta Policy (with profit)",
     description: "শিশুর ভবিষ্যৎ সুরক্ষায় লাভজনক বীমা পরিকল্পনা।",
@@ -47,6 +50,7 @@ const policies = [
   },
   {
     href: "/marriage-endowment",
+    policyId: "marriage-endowment" as const,
     title: "ম্যারেজ এন্ডাওমেন্ট পলিসি",
     subtitle: "Marriage Endowment Policy (with profit)",
     description: "বিয়ের ভবিষ্যৎ সঞ্চয়ের জন্য লাভজনক বীমা পরিকল্পনা।",
@@ -68,6 +72,7 @@ const policies = [
   },
   {
     href: "/three-instalment",
+    policyId: "three-instalment" as const,
     title: "৩ কিস্তি বীমা",
     subtitle: "Three Instalment Policy (with profit)",
     description:
@@ -90,6 +95,7 @@ const policies = [
   },
   {
     href: "/age-calculator",
+    policyId: null,
     title: "বয়স ক্যালকুলেটর",
     subtitle: "Age Calculator",
     description: "জন্মতারিখ থেকে সহজেই সঠিক বয়স হিসাব করুন।",
@@ -146,38 +152,37 @@ export default function Home() {
           }}
         >
           {policies.map((policy) => (
-            <Link
-              key={policy.href}
-              href={policy.href}
-              style={{ textDecoration: "none" }}
-            >
-              <div
-                style={{
-                  backgroundColor: "#ffffff",
-                  borderRadius: "12px",
-                  padding: "32px",
-                  boxShadow:
-                    "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
-                  border: "1px solid #e5e7eb",
-                  cursor: "pointer",
-                  transition: "box-shadow 0.2s, transform 0.15s",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "16px",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow =
-                    "0 10px 25px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.06)";
-                  (e.currentTarget as HTMLDivElement).style.transform =
-                    "translateY(-2px)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow =
-                    "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)";
-                  (e.currentTarget as HTMLDivElement).style.transform =
-                    "translateY(0)";
-                }}
-              >
+            <div key={policy.href} style={{ position: "relative" }}>
+              <Link href={policy.href} style={{ textDecoration: "none" }}>
+                <div
+                  style={{
+                    height: "100%",
+                    boxSizing: "border-box",
+                    backgroundColor: "#ffffff",
+                    borderRadius: "12px",
+                    padding: "32px",
+                    boxShadow:
+                      "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
+                    border: "1px solid #e5e7eb",
+                    cursor: "pointer",
+                    transition: "box-shadow 0.2s, transform 0.15s",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                  }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow =
+                      "0 10px 25px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.06)";
+                    (e.currentTarget as HTMLDivElement).style.transform =
+                      "translateY(-2px)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow =
+                      "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)";
+                    (e.currentTarget as HTMLDivElement).style.transform =
+                      "translateY(0)";
+                  }}
+                >
                 <div>{policy.icon}</div>
                 <div>
                   <h2
@@ -236,8 +241,16 @@ export default function Home() {
                     />
                   </svg>
                 </div>
-              </div>
-            </Link>
+                </div>
+              </Link>
+              {policy.policyId && (
+                <PolicyDraftsButton
+                  policyId={policy.policyId}
+                  policyHref={policy.href}
+                  policyTitle={policy.title}
+                />
+              )}
+            </div>
           ))}
         </div>
       </div>

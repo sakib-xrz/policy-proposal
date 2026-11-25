@@ -167,6 +167,7 @@ export default function ThreeInstalmentDocument({
             <input
               type="radio"
               name="three-instalment-term"
+              value={term}
               checked={policyTermMode === term}
               onChange={() => setPolicyTermMode(term)}
               style={{ width: "16px", height: "16px", accentColor: "#2563eb" }}

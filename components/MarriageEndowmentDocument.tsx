@@ -156,6 +156,7 @@ export default function MarriageEndowmentDocument({
             <input
               type="radio"
               name="marriage-example-term"
+              value={term}
               checked={exampleTerm === term}
               onChange={() => setExampleTerm(term)}
               style={{ width: "16px", height: "16px", accentColor: "#2563eb" }}
