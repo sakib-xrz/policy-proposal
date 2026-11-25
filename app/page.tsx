@@ -47,7 +47,7 @@ const policies = [
   },
   {
     href: "/marriage-endowment",
-    title: "ম্যারেজ এন্ডাওমেন্ট পলিসি (লাভসহ)",
+    title: "ম্যারেজ এন্ডাওমেন্ট পলিসি",
     subtitle: "Marriage Endowment Policy (with profit)",
     description: "বিয়ের ভবিষ্যৎ সঞ্চয়ের জন্য লাভজনক বীমা পরিকল্পনা।",
     icon: (
@@ -68,9 +68,10 @@ const policies = [
   },
   {
     href: "/three-instalment",
-    title: "৩ কিস্তি বীমা (লাভসহ)",
+    title: "৩ কিস্তি বীমা",
     subtitle: "Three Instalment Policy (with profit)",
-    description: "মেয়াদকালে ৩ কিস্তিতে অর্থ প্রাপ্তির সুবিধাজনক বীমা পরিকল্পনা।",
+    description:
+      "মেয়াদকালে ৩ কিস্তিতে অর্থ প্রাপ্তির সুবিধাজনক বীমা পরিকল্পনা।",
     icon: (
       <svg
         style={{ width: "40px", height: "40px", color: "#8b5cf6" }}
@@ -83,6 +84,27 @@ const policies = [
           strokeLinejoin="round"
           strokeWidth={1.5}
           d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+        />
+      </svg>
+    ),
+  },
+  {
+    href: "/age-calculator",
+    title: "বয়স ক্যালকুলেটর",
+    subtitle: "Age Calculator",
+    description: "জন্মতারিখ থেকে সহজেই সঠিক বয়স হিসাব করুন।",
+    icon: (
+      <svg
+        style={{ width: "40px", height: "40px", color: "#ea580c" }}
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1.5}
+          d="M8 7V3m8 4V3M5 11h14M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2zm7 9v3m-1.5-1.5h3"
         />
       </svg>
     ),
@@ -134,7 +156,8 @@ export default function Home() {
                   backgroundColor: "#ffffff",
                   borderRadius: "12px",
                   padding: "32px",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
+                  boxShadow:
+                    "0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)",
                   border: "1px solid #e5e7eb",
                   cursor: "pointer",
                   transition: "box-shadow 0.2s, transform 0.15s",
