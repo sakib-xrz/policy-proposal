@@ -17,6 +17,14 @@ function formatDate(date: Date) {
   return `${year}-${month}-${day}`;
 }
 
+function formatDisplayDate(date: string) {
+  return new Date(`${date}T00:00:00`).toLocaleDateString("bn-BD", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 function addCalendarMonths(date: Date, months: number) {
   const targetMonth = date.getMonth() + months;
   const targetYear = date.getFullYear() + Math.floor(targetMonth / 12);
@@ -193,30 +201,79 @@ export default function AgeCalculatorPage() {
             >
               জন্মতারিখ
             </label>
-            <input
-              ref={birthDateInputRef}
-              id="birth-date"
-              type="date"
-              value={birthDate}
-              max={maximumDate}
-              onChange={(event) => {
-                setBirthDate(event.target.value);
-                setAge(null);
-                setError("");
-              }}
+            <div
               style={{
+                position: "relative",
                 boxSizing: "border-box",
                 width: "100%",
                 minHeight: "52px",
-                padding: "14px 16px",
                 border: `1px solid ${error ? "#dc2626" : "#d1d5db"}`,
                 borderRadius: "8px",
-                color: "#111827",
                 backgroundColor: "#ffffff",
-                fontSize: "16px",
-                outline: "none",
+                overflow: "hidden",
               }}
-            />
+            >
+              <div
+                aria-hidden="true"
+                style={{
+                  minHeight: "52px",
+                  padding: "0 16px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: "12px",
+                  color: birthDate ? "#111827" : "#9ca3af",
+                  fontSize: "16px",
+                  pointerEvents: "none",
+                }}
+              >
+                <span>
+                  {birthDate
+                    ? formatDisplayDate(birthDate)
+                    : "দিন / মাস / বছর নির্বাচন করুন"}
+                </span>
+                <svg
+                  style={{
+                    width: "22px",
+                    height: "22px",
+                    flexShrink: 0,
+                    color: "#2563eb",
+                  }}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.8}
+                    d="M8 7V3m8 4V3M5 10h14M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"
+                  />
+                </svg>
+              </div>
+              <input
+                ref={birthDateInputRef}
+                id="birth-date"
+                type="date"
+                aria-label="জন্মতারিখ নির্বাচন করুন"
+                value={birthDate}
+                max={maximumDate}
+                onChange={(event) => {
+                  setBirthDate(event.target.value);
+                  setAge(null);
+                  setError("");
+                }}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  border: 0,
+                  opacity: 0,
+                  cursor: "pointer",
+                }}
+              />
+            </div>
 
             {error && (
               <p
