@@ -258,6 +258,13 @@ export default function AgeCalculatorPage() {
                 aria-label="জন্মতারিখ নির্বাচন করুন"
                 value={birthDate}
                 max={maximumDate}
+                onClick={(event) => {
+                  try {
+                    event.currentTarget.showPicker();
+                  } catch {
+                    event.currentTarget.focus();
+                  }
+                }}
                 onChange={(event) => {
                   setBirthDate(event.target.value);
                   setAge(null);
