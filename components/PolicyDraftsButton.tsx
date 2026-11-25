@@ -135,12 +135,16 @@ export default function PolicyDraftsButton({
                 style={{
                   width: "40px",
                   height: "40px",
+                  padding: 0,
+                  display: "grid",
+                  placeItems: "center",
                   border: 0,
                   borderRadius: "50%",
                   backgroundColor: "#f3f4f6",
                   color: "#374151",
                   cursor: "pointer",
                   fontSize: "22px",
+                  lineHeight: 1,
                 }}
               >
                 ×
@@ -161,7 +165,7 @@ export default function PolicyDraftsButton({
                   <strong
                     style={{ display: "block", color: "#111827", fontSize: "16px" }}
                   >
-                    {draft.customerName} — {draft.policyTitle}
+                    {draft.customerName}
                   </strong>
                   <span
                     style={{

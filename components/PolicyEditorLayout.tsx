@@ -180,6 +180,7 @@ export default function PolicyEditorLayout({
           }}
         >
           <div
+            className="policy-editor-actions"
             style={{
               display: "flex",
               flexWrap: "wrap",
@@ -242,11 +243,15 @@ export default function PolicyEditorLayout({
             }}
           >
             {saveStatus && (
-              <span style={{ color: "#16a34a", fontSize: "13px" }}>
+              <span
+                className="policy-editor-save-status"
+                style={{ color: "#16a34a", fontSize: "13px" }}
+              >
                 {saveStatus}
               </span>
             )}
             <button
+              className="policy-editor-action-button"
               type="button"
               onClick={() => persistDraft(false)}
               style={{
@@ -265,6 +270,7 @@ export default function PolicyEditorLayout({
               ড্রাফট সংরক্ষণ করুন
             </button>
             <button
+              className="policy-editor-action-button"
               type="button"
               onClick={handleDownloadPDF}
               disabled={isGenerating}
